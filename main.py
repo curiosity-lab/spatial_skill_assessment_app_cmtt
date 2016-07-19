@@ -11,7 +11,14 @@ class ZeroScreen(Screen):
 
 
 class QuestionScreen(Screen):
-    pass
+    current_question = 0
+
+    def on_enter(self, *args):
+        if self.current_question == 0:
+            TTS.speak(['Look at these pieces. Look at these pictures. If you put the pieces together, they will make one of the pictures. Press the picture the pieces make.'])
+        else:
+            TTS.speak(['Press the picture the pieces make.'])
+        self.current_question += 1
 
 
 class SpatialSkillAssessmentApp(App):
