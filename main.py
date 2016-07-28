@@ -84,9 +84,12 @@ class SpatialSkillAssessmentApp(App):
         return self.sm
 
     def init_communication(self):
-        KC.start(the_ip='192.168.1.254')  # 127.0.0.1
+        KC.start(the_ip='192.168.1.254', the_parents=[self])  # 127.0.0.1
         KL.start(mode=[DataMode.file, DataMode.communication, DataMode.ros], pathname=self.user_data_dir,
                  the_ip='192.168.1.254')
+
+    def on_connection(self):
+        KL.log.insert(action=LogAction.data, obj='SpatialSkillAssessmentApp', comment='start')
 
     def press_start(self, current_question):
         self.sm.current = 'question_screen_' + str(current_question).zfill(2)
