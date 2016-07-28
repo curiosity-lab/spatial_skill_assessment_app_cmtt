@@ -37,6 +37,7 @@ class TTS:
 
     @staticmethod
     def speak(the_text, finished=None):
+        print('speaking: ', the_text)
         for txt in the_text:
             if the_tts is 'pyttsx':
                 TTS.engine.say(txt)

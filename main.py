@@ -13,16 +13,55 @@ class ZeroScreen(Screen):
 class QuestionScreen(Screen):
     current_question = 0
 
+    def on_pre_enter(self, *args):
+        self.next_question()
+
     def on_enter(self, *args):
-        if self.current_question == 0:
+        if self.current_question < 3:
             TTS.speak(['Look at these pieces. Look at these pictures. If you put the pieces together, they will make one of the pictures. Press the picture the pieces make.'])
         else:
             TTS.speak(['Press the picture the pieces make.'])
-        self.current_question += 1
+
+    def next_question(self, current_question=None):
+        self.ids['A_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
+                                                                 str(self.current_question * 2).zfill(2) + '_A.jpg'
+        self.ids['B_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
+                                                                 str(self.current_question * 2).zfill(2) + '_B.jpg'
+        self.ids['C_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
+                                                                 str(self.current_question * 2).zfill(2) + '_C.jpg'
+        self.ids['D_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
+                                                                 str(self.current_question * 2).zfill(2) + '_D.jpg'
+        self.ids['pieces'].source = 'images/CMTT_A_Order1_Page_' + \
+                                                    str(self.current_question * 2 + 1).zfill(2) + '.jpg'
+
+        # because log goes after this, the name is changed to (real number - 1)
+        self.ids['A_button'].name = str(self.current_question) + '_A'
+        self.ids['B_button'].name = str(self.current_question) + '_B'
+        self.ids['C_button'].name = str(self.current_question) + '_C'
+        self.ids['D_button'].name = str(self.current_question) + '_D'
+
+
+    def pressed(self, answer):
+        print(answer)
+        if self.current_question < 31:
+            next_question = self.current_question + 2
+            next_screen = 'question_screen_' + str(next_question).zfill(2)
+            self.manager.current = next_screen
+        else:
+            self.ids['pieces'].source = ''
+            self.ids['A_button'].background_disabled_normal = ''
+            self.ids['B_button'].background_disabled_normal = ''
+            self.ids['C_button'].background_disabled_normal = ''
+            self.ids['D_button'].background_disabled_normal = ''
+            self.ids['C_button'].text = 'The End'
+            self.ids['C_button'].font_size =36
+            self.ids['C_button'].color = (0,1,0,1)
+            self.ids['C_button'].background_color = (1,0,1,1)
+            for i in self.ids:
+                self.ids[i].disabled = True
 
 
 class SpatialSkillAssessmentApp(App):
-    current_question = 0
 
     def build(self):
         # initialize logger
@@ -35,43 +74,18 @@ class SpatialSkillAssessmentApp(App):
         self.zero_screen = ZeroScreen(name='zero_screen')
         self.sm.add_widget(self.zero_screen)
 
-        self.question_screen = QuestionScreen(name='question_screen')
-        self.sm.add_widget(self.question_screen)
+        self.questions = []
+        for i in range(1,33):
+            self.questions.append(QuestionScreen(name='question_screen_' + str(i).zfill(2)))
+            self.questions[-1].current_question = i
+            self.sm.add_widget(self.questions[-1])
 
         self.sm.current = 'zero_screen'
         return self.sm
 
-    def next_question(self, current_question=None):
-        if current_question is None:
-            self.current_question += 2
-        else:
-            self.current_question = current_question
-
-        self.question_screen.ids['A_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
-                                                                 str(self.current_question*2).zfill(2) + '_A.jpg'
-        self.question_screen.ids['B_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
-                                                                 str(self.current_question*2).zfill(2) + '_B.jpg'
-        self.question_screen.ids['C_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
-                                                                 str(self.current_question*2).zfill(2) + '_C.jpg'
-        self.question_screen.ids['D_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
-                                                                 str(self.current_question*2).zfill(2) + '_D.jpg'
-        self.question_screen.ids['pieces'].source = 'images/CMTT_A_Order1_Page_' + \
-                                                    str(self.current_question*2+1).zfill(2) + '.jpg'
-
-        # because log goes after this, the name is changed to (real number - 1)
-        self.question_screen.ids['A_button'].name = str(self.current_question-1) + '_A'
-        self.question_screen.ids['B_button'].name = str(self.current_question-1) + '_B'
-        self.question_screen.ids['C_button'].name = str(self.current_question-1) + '_C'
-        self.question_screen.ids['D_button'].name = str(self.current_question-1) + '_D'
-
-        self.sm.current = 'question_screen'
-
-    def pressed(self, answer):
-        print(answer)
-        if self.current_question >= 32:
-            self.end_game()
-
-        self.next_question()
+    def press_start(self, current_question):
+        # self.question_screen.next_question(current_question)
+        self.sm.current = 'question_screen_' + str(current_question).zfill(2)
 
     def end_game(self):
         self.stop()
