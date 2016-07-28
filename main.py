@@ -41,8 +41,11 @@ class SpatialSkillAssessmentApp(App):
         self.sm.current = 'zero_screen'
         return self.sm
 
-    def next_question(self):
-        self.current_question += 1
+    def next_question(self, current_question=None):
+        if current_question is None:
+            self.current_question += 2
+        else:
+            self.current_question = current_question
 
         self.question_screen.ids['A_button'].background_normal = 'images/CMTT_A_Order1_Page_' + \
                                                                  str(self.current_question*2).zfill(2) + '_A.jpg'

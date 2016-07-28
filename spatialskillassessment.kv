@@ -3,24 +3,36 @@
 #:import win kivy.core.window
 
 <ZeroScreen>:
-    start_button: start_button
+    start_button_pre: start_button_pre
+    start_button_post: start_button_post
     subject_id: subject_id
     name: 'zero_screen'
     Widget:
         LoggedButton:
-            id: start_button
-            name: 'start_button'
+            id: start_button_pre
+            name: 'start_button_pre'
             background_color: 1,0,1,1
             background_normal: ''
-            text: 'Start'
-            font_size: 36
-            size: root.width * 0.3, root.height * 0.2
-            pos: root.width * 0.80 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
-            on_press: app.next_question()
+            text: 'Start Pre'
+            font_size: 32
+            size: root.width * 0.15, root.height * 0.15
+            pos: root.width * 0.65 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
+            on_press: app.next_question(1)
+
+        LoggedButton:
+            id: start_button_post
+            name: 'start_button_post'
+            background_color: 1,0,1,1
+            background_normal: ''
+            text: 'Start Post'
+            font_size: 32
+            size: root.width * 0.175, root.height * 0.15
+            pos: root.width * 0.85 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
+            on_press: app.next_question(2)
 
         Label:
             text: "Subject ID:"
-            size: root.width * 0.15, root.height * 0.2
+            size: root.width * 0.175, root.height * 0.2
             pos: root.width * 0.05 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
 
         LoggedTextInput:
@@ -28,13 +40,27 @@
             name: 'subject_id'
             text: ''
             font_size: 36
-            size: root.width * 0.5, root.height * 0.2
+            size: root.width * 0.4, root.height * 0.2
             pos: root.width * 0.35 - self.width * 0.5, root.height * 0.75 - self.height * 0.5
 
 <QuestionScreen>
     name: 'question_screen'
 
     Widget:
+        canvas.before:
+            Color:
+                rgba: 1,1,1,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
+
+        Image:
+            id: pieces
+            name: 'pieces'
+            size: root.width * 0.65 , root.width * 0.65
+            pos: root.width * 0.75 - self.width * 0.5, root.height * 0.4 - self.height * 0.5
+            source: 'images/CMTT_A_Order1_Page_03.jpg'
+
         LoggedButton:
             id: A_button
             name: 'A'
@@ -47,7 +73,7 @@
             id: B_button
             name: 'B'
             size: root.width * 0.5 * 456.0 / 1000.0, root.width * 0.5 * 570.0 / 1000.0
-            pos: root.width * 0.20 - self.width * 0.5, root.height * 0.25 - self.height * 0.5
+            pos: root.width * 0.15 - self.width * 0.5, root.height * 0.25 - self.height * 0.5
             on_press: app.pressed(self.name)
             background_normal: 'images/CMTT_A_Order1_Page_02_B.jpg'
 
@@ -63,13 +89,7 @@
             id: D_button
             name: 'D'
             size: root.width * 0.5 * 456.0 / 1000.0, root.width * 0.5 * 570.0 / 1000.0
-            pos: root.width * 0.2 - self.width * 0.5, root.height * 0.7 - self.height * 0.5
+            pos: root.width * 0.15 - self.width * 0.5, root.height * 0.7 - self.height * 0.5
             on_press: app.pressed(self.name)
             background_normal: 'images/CMTT_A_Order1_Page_02_D.jpg'
 
-        Image:
-            id: pieces
-            name: 'pieces'
-            size: root.width * 0.35 , root.width * 0.35
-            pos: root.width * 0.8 - self.width * 0.5, root.height * 0.4 - self.height * 0.5
-            source: 'images/CMTT_A_Order1_Page_03.jpg'
