@@ -18,7 +18,7 @@ class QuestionScreen(Screen):
 
     def on_enter(self, *args):
         if self.current_question < 3:
-            TTS.speak(['Look at these pieces. Look at these pictures. If you put the pieces together, they will make one of the pictures. Press the picture the pieces make.'])
+            TTS.speak(['Look at these pieces in the red card. Look at these pictures in the blue cards. If you put the pieces together, they will make one of the pictures. Press the picture the pieces make.'])
         else:
             TTS.speak(['Press the picture the pieces make.'])
 
