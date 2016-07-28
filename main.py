@@ -64,14 +64,14 @@ class QuestionScreen(Screen):
 class SpatialSkillAssessmentApp(App):
 
     def build(self):
-        # initialize logger
-        KL.start([DataMode.file, DataMode.communication, DataMode.ros], self.user_data_dir)
-        KL.log.insert(action=LogAction.data, obj='app', comment='spatial_skill_app')
-        # KL.start([DataMode.file], "/sdcard/curiosity/")#self.user_data_dir)
+
+        self.init_communication()
+
         TTS.start()
         self.sm = ScreenManager()
 
         self.zero_screen = ZeroScreen(name='zero_screen')
+        self.zero_screen.ids['subject_id'].bind(text=self.zero_screen.ids['subject_id'].on_text_change)
         self.sm.add_widget(self.zero_screen)
 
         self.questions = []
@@ -83,8 +83,12 @@ class SpatialSkillAssessmentApp(App):
         self.sm.current = 'zero_screen'
         return self.sm
 
+    def init_communication(self):
+        KC.start(the_ip='192.168.1.254')  # 127.0.0.1
+        KL.start(mode=[DataMode.file, DataMode.communication, DataMode.ros], pathname=self.user_data_dir,
+                 the_ip='192.168.1.254')
+
     def press_start(self, current_question):
-        # self.question_screen.next_question(current_question)
         self.sm.current = 'question_screen_' + str(current_question).zfill(2)
 
     def end_game(self):
